@@ -1,0 +1,43 @@
+FROM quay.io/luet/base:0.35.0 as luet
+
+# Common packages for all
+FROM alpine as framework
+RUN apk add --no-cache bash rsync
+ENV LUET_NOLOCK=true
+COPY --from=luet /usr/bin/luet /usr/bin/luet
+COPY repositories.yaml /repositories.yaml
+RUN luet install -y --config repositories.yaml --system-target /framework_temp/common \
+    static/grub-config \
+    dracut/immucore \
+    system/suc-upgrade \
+    system/grub2-efi \
+    static/kairos-overlay-files \
+    system/kcrypt \
+    system/kcrypt-challenger \
+    system/immucore \
+    system/kairos-agent
+RUN luet install -y --config repositories.yaml --system-target /framework_temp/openrc \
+    init-svc/openrc \
+    initrd/alpine
+RUN luet install -y --config repositories.yaml --system-target /framework_temp/systemd \
+    init-svc/systemd \
+    dracut/kairos-network \
+    dracut/kairos-sysext
+RUN luet install -y --config repositories.yaml --system-target /framework_temp/systemd-fips \
+    init-svc/systemd \
+    dracut/kairos-network \
+    dracut/kairos-sysext \
+    fips/kcrypt \
+    fips/kcrypt-challenger \
+    fips/immucore \
+    fips/kairos-agent
+# Some cleanup
+RUN rm -Rf /framework_temp/common/var/tmp
+RUN rm -Rf /framework_temp/openrc/var/tmp
+RUN rm -Rf /framework_temp/systemd/var/tmp
+RUN rm -Rf /framework_temp/systemd-fips/var/tmp
+RUN rm -Rf /framework_temp/common/var/cache
+RUN rm -Rf /framework_temp/openrc/var/cache
+RUN rm -Rf /framework_temp/systemd/var/cache
+RUN rm -Rf /framework_temp/systemd-fips/var/cache
+COPY kairos_setup /bin/kairos_setup
