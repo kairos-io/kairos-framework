@@ -1,8 +1,10 @@
-name: Build PR 🔧
+name: Build images 🔧
 
 on:
   pull_request:
   push:
+    tags:
+      - v*
     branches:
       - master
       - main
