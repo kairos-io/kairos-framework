@@ -8,7 +8,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-framework:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +19,7 @@ jobs:
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v3
-      - name: Docker meta for framework
+      - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -32,9 +32,27 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha
-      - name: Docker meta for framework fips
-        id: meta_fips
+      - name: Build and push framework
+        uses: docker/build-push-action@v5
+        with:
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          target: framework
+  build-framework-fips:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+        with:
+          platforms: all
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Docker meta
+        id: meta
         uses: docker/metadata-action@v5
         with:
           images: |
@@ -46,7 +64,6 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha
       - name: Build and push framework
         uses: docker/build-push-action@v5
         with:
@@ -54,14 +71,4 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          target: framework
-      - name: Build and push fips framework
-        uses: docker/build-push-action@v5
-        with:
-          platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta_fips.outputs.tags }}
-          labels: ${{ steps.meta_fips.outputs.labels }}
           target: framework_fips
-
-
