@@ -1,7 +1,12 @@
-name: Build images 🔧
+name: Release images 🔧
 
 on:
-  pull_request:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+      - main
 
 jobs:
   build-framework:
@@ -24,7 +29,6 @@ jobs:
           tags: |
             type=schedule
             type=ref,event=branch
-            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
@@ -62,7 +66,6 @@ jobs:
           tags: |
             type=schedule
             type=ref,event=branch
-            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
