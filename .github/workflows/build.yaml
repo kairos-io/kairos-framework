@@ -44,7 +44,7 @@ jobs:
           target: framework
       - name: Extract versions
         run: |
-          docker run --name framework ${{ steps.meta.outputs.tags }} /bin/true || exit 0
+          docker run --name framework ${{ steps.meta.outputs.tags }} /bin/true || true
           docker cp framework:/framework/etc/kairos/versions.yaml .
           echo "### Framework versions\n" >> $GITHUB_STEP_SUMMARY
           cat versions.yaml >> $GITHUB_STEP_SUMMARY
@@ -84,7 +84,7 @@ jobs:
           target: framework_fips
       - name: Extract versions
         run: |
-          docker run --name framework ${{ steps.meta.outputs.tags }} /bin/true || exit 0
+          docker run --name framework ${{ steps.meta.outputs.tags }} /bin/true || true
           docker cp framework:/framework/etc/kairos/versions.yaml .
           echo "### Framework versions (FIPS)\n" >> $GITHUB_STEP_SUMMARY
           cat versions.yaml >> $GITHUB_STEP_SUMMARY
