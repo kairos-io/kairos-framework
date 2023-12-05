@@ -46,7 +46,7 @@ jobs:
         run: |
           docker run --name framework ${{ steps.meta.outputs.tags }} true || true
           docker cp framework:/framework/etc/kairos/versions.yaml .
-          .githut/yaml2md.sh >> $GITHUB_STEP_SUMMARY
+          .github/yaml2md.sh >> $GITHUB_STEP_SUMMARY
           docker rm framework
   build-framework-fips:
     runs-on: ubuntu-latest
@@ -84,5 +84,5 @@ jobs:
         run: |
           docker run --name framework ${{ steps.meta.outputs.tags }} true || true
           docker cp framework:/framework/etc/kairos/versions.yaml .
-          .githut/yaml2md.sh >> $GITHUB_STEP_SUMMARY
+          .github/yaml2md.sh >> $GITHUB_STEP_SUMMARY
           docker rm framework
