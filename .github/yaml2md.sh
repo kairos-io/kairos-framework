@@ -13,3 +13,5 @@ yq e '.[] | [.name, .category, .version] | @tsv' "${FILE}" | while IFS=$'\t' rea
 do
   echo "| $name | $category | $version |"
 done
+
+echo ""
