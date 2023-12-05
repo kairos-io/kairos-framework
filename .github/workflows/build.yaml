@@ -42,6 +42,12 @@ jobs:
           docker cp framework:/framework/etc/kairos/versions.yaml .
           .github/yaml2md.sh >> $GITHUB_STEP_SUMMARY
           docker rm framework
+      - uses: actions/upload-artifact@v3
+        with:
+          name: versions.zip
+          path: |
+            versions.yaml
+          if-no-files-found: error
   build-framework-fips:
     runs-on: ubuntu-latest
     steps:
@@ -80,3 +86,41 @@ jobs:
           docker cp framework:/framework/etc/kairos/versions.yaml .
           .github/yaml2md.sh >> $GITHUB_STEP_SUMMARY
           docker rm framework
+      - uses: actions/upload-artifact@v3
+        with:
+          name: versions_fips.zip
+          path: |
+            versions.yaml
+          if-no-files-found: error
+  comment-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    needs: [build-framework, build-framework-fips]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download versions
+        uses: actions/download-artifact@v3
+        with:
+          name: versions.zip
+      - name: Rename version
+        run: |
+          mv versions.yaml versions_framework.yaml
+      - name: Download versions fips
+        uses: actions/download-artifact@v3
+        with:
+          name: versions_fips.zip
+      - name: Rename version fips
+        run: |
+          mv versions.yaml versions_fips.yaml
+      - name: Generate PR text
+        run: |
+          echo "Framework packages:" > pr-comment.txt
+          .github/yaml2md.sh versions_framework.yaml >> pr-comment.txt
+          echo "Framework fips packages:" >> pr-comment.txt
+          .github/yaml2md.sh versions_fips.yaml >> pr-comment.txt
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+            message-file: pr-comment.txt
+
