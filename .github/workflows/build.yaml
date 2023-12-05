@@ -42,6 +42,14 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           target: framework
+      - name: Extract versions
+        run: |
+          docker run --name framework ${{ steps.meta.outputs.tags }} /bin/true || exit 0
+          docker cp framework:/framework/etc/kairos/versions.yaml .
+          echo "### Framework versions\n" >> $GITHUB_STEP_SUMMARY
+          cat versions.yaml >> $GITHUB_STEP_SUMMARY
+          echo "\n" >> $GITHUB_STEP_SUMMARY
+          docker rm framework
   build-framework-fips:
     runs-on: ubuntu-latest
     steps:
@@ -74,3 +82,11 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           target: framework_fips
+      - name: Extract versions
+        run: |
+          docker run --name framework ${{ steps.meta.outputs.tags }} /bin/true || exit 0
+          docker cp framework:/framework/etc/kairos/versions.yaml .
+          echo "### Framework versions (FIPS)\n" >> $GITHUB_STEP_SUMMARY
+          cat versions.yaml >> $GITHUB_STEP_SUMMARY
+          echo "\n" >> $GITHUB_STEP_SUMMARY
+          docker rm framework
