@@ -21,9 +21,9 @@
         "^repositories.yaml$"
       ],
       "matchStrings": [
-        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)"
+        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\sreference:\\s(?<currentValue>.*?)\\s"
       ],
       "versioningTemplate": "{{#if versioning}}{{versioning}}{{else}}docker{{/if}}"
     }
-  ]
+    ]
 }
