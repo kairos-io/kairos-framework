@@ -43,6 +43,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           target: framework
       - name: Extract versions
+        shell: bash --noprofile --norc -e {0}
         run: |
           docker run --name framework ${{ steps.meta.outputs.tags }} true || true
           docker cp framework:/framework/etc/kairos/versions.yaml .
@@ -83,6 +84,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           target: framework_fips
       - name: Extract versions
+        shell: bash --noprofile --norc -e {0}
         run: |
           docker run --name framework ${{ steps.meta.outputs.tags }} true || true
           docker cp framework:/framework/etc/kairos/versions.yaml .
