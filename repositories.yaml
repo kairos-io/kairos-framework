@@ -9,9 +9,11 @@ repositories:
     priority: 2
     urls:
       - "quay.io/kairos/packages"
+    # renovate: datasource=docker depName=quay.io/kairos/packages versioning=regex:^[0-9]{14}-repository\.yaml$
     reference: 20231123154748-repository.yaml
   - !!merge <<: *kairos
     arch: arm64
     urls:
       - "quay.io/kairos/packages-arm64"
+    # renovate: datasource=docker depName=quay.io/kairos/packages-arm64 versioning=regex:^[0-9]{14}-repository\.yaml$
     reference: 20231202000933-repository.yaml
