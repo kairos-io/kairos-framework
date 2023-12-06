@@ -114,7 +114,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    needs: [build-framework, build-framework-fips]
+    needs: [build-framework, build-framework-fips, get-old-versions]
     steps:
       - uses: actions/checkout@v4
       - name: Download versions
