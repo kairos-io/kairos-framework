@@ -4,6 +4,24 @@ on:
   pull_request:
 
 jobs:
+  get-old-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract versions
+        run: |
+          docker run --name framework ttl.sh/framework:main true || true
+          docker cp framework:/framework/etc/kairos/versions.yaml versions_framework.old.yaml
+          docker rm framework
+          docker run --name framework_fips ttl.sh/framework_fips:main true || true
+          docker cp framework_fips:/framework/etc/kairos/versions.yaml versions_fips.old.yaml
+          docker rm framework_fips
+      - uses: actions/upload-artifact@v3
+        with:
+          name: old_versions.zip
+          path: |
+            versions_framework.old.yaml
+            versions_fips.old.yaml
   build-framework:
     runs-on: ubuntu-latest
     steps:
@@ -39,14 +57,14 @@ jobs:
       - name: Extract versions
         run: |
           docker run --name framework ${{ steps.meta.outputs.tags }} true || true
-          docker cp framework:/framework/etc/kairos/versions.yaml .
+          docker cp framework:/framework/etc/kairos/versions.yaml versions_framework.new.yaml
           .github/yaml2md.sh >> $GITHUB_STEP_SUMMARY
           docker rm framework
       - uses: actions/upload-artifact@v3
         with:
           name: versions.zip
           path: |
-            versions.yaml
+            versions_framework.new.yaml
           if-no-files-found: error
   build-framework-fips:
     runs-on: ubuntu-latest
@@ -83,14 +101,14 @@ jobs:
       - name: Extract versions
         run: |
           docker run --name framework ${{ steps.meta.outputs.tags }} true || true
-          docker cp framework:/framework/etc/kairos/versions.yaml .
+          docker cp framework:/framework/etc/kairos/versions.yaml versions_fips.new.yaml
           .github/yaml2md.sh >> $GITHUB_STEP_SUMMARY
           docker rm framework
       - uses: actions/upload-artifact@v3
         with:
           name: versions_fips.zip
           path: |
-            versions.yaml
+            versions_fips.new.yaml
           if-no-files-found: error
   comment-pr:
     runs-on: ubuntu-latest
@@ -103,25 +121,20 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: versions.zip
-      - name: Rename version
-        run: |
-          mv versions.yaml versions_framework.yaml
       - name: Download versions fips
         uses: actions/download-artifact@v3
         with:
           name: versions_fips.zip
-      - name: Rename version fips
-        run: |
-          mv versions.yaml versions_fips.yaml
+      - name: Download old versions
+        uses: actions/download-artifact@v3
+        with:
+          name: old_versions.zip
       - name: Generate PR text
         run: |
-          echo "Framework packages:" > pr-comment.txt
-          .github/yaml2md.sh versions_framework.yaml >> pr-comment.txt
-          echo "Framework fips packages:" >> pr-comment.txt
-          .github/yaml2md.sh versions_fips.yaml >> pr-comment.txt
+          .github/diffversions.sh
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v2
         with:
             comment_tag: bot-comment
-            filePath: pr-comment.txt
+            filePath: pr-message
 
