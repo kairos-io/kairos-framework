@@ -31,8 +31,8 @@ if [[ $? != 0 ]]; then
 fi
 
 # Merge and sort versions files
-yq -P '.|=sort_by(.name)|.[]|[{"name": .name, "category": .category, "version": .version}]' versions_framework.old.yaml versions_fips.old.yaml > merged.old.yaml
-yq -P '.|=sort_by(.name)|.[]|[{"name": .name, "category": .category, "version": .version}]' versions_framework.new.yaml versions_fips.new.yaml > merged.new.yaml
+yq -P '.|=sort_by(.name, .category)|.[]|[{"name": .name, "category": .category, "version": .version}]' versions_framework.old.yaml versions_fips.old.yaml > merged.old.yaml
+yq -P '.|=sort_by(.name, .category)|.[]|[{"name": .name, "category": .category, "version": .version}]' versions_framework.new.yaml versions_fips.new.yaml > merged.new.yaml
 # Remove yaml separator
 sed -i 's|---||g' merged.old.yaml
 sed -i 's|---||g' merged.new.yaml
