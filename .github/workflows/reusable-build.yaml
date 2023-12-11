@@ -60,6 +60,8 @@ jobs:
           build-args: |
             SECURITY_PROFILE=${{ inputs.security_profile }}
       - name: Cosign image
+        env:
+          COSIGN_YES: true
         if: ${{ github.event_name != 'pull_request' }}
         run: |
           cosign sign ${{ steps.meta.outputs.tags }}}
