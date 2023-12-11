@@ -4,19 +4,19 @@
 # It compares the versions of the packages in the old and new repositories and
 # generates a message with the differences.
 # It expects the following files to be present in the current directory:
-# - versions_framework.old.yaml -> from the old repository framework image
-# - versions_framework.new.yaml -> from the new repository framework image
+# - versions_generic.old.yaml -> from the old repository framework image
+# - versions_generic.new.yaml -> from the new repository framework image
 # - versions_fips.old.yaml -> from the old repository fips image
 # - versions_fips.new.yaml -> from the new repository fips image
 
-stat versions_framework.old.yaml > /dev/null 2>&1
+stat versions_generic.old.yaml > /dev/null 2>&1
 if [[ $? != 0 ]]; then
-  echo "versions_framework.old.yaml not found"
+  echo "versions_generic.old.yaml not found"
   exit 1
 fi
-stat versions_framework.new.yaml > /dev/null 2>&1
+stat versions_generic.new.yaml > /dev/null 2>&1
 if [[ $? != 0 ]]; then
-  echo "versions_framework.new.yaml not found"
+  echo "versions_generic.new.yaml not found"
   exit 1
 fi
 stat versions_fips.old.yaml > /dev/null 2>&1
@@ -31,8 +31,8 @@ if [[ $? != 0 ]]; then
 fi
 
 # Merge and sort versions files
-yq -P '.|=sort_by(.name, .category)|.[]|[{"name": .name, "category": .category, "version": .version}]' versions_framework.old.yaml versions_fips.old.yaml > merged.old.yaml
-yq -P '.|=sort_by(.name, .category)|.[]|[{"name": .name, "category": .category, "version": .version}]' versions_framework.new.yaml versions_fips.new.yaml > merged.new.yaml
+yq -P '.|=sort_by(.name, .category)|.[]|[{"name": .name, "category": .category, "version": .version}]' versions_generic.old.yaml versions_fips.old.yaml > merged.old.yaml
+yq -P '.|=sort_by(.name, .category)|.[]|[{"name": .name, "category": .category, "version": .version}]' versions_generic.new.yaml versions_fips.new.yaml > merged.new.yaml
 # Remove yaml separator
 sed -i 's|---||g' merged.old.yaml
 sed -i 's|---||g' merged.new.yaml

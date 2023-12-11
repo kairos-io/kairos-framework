@@ -1,0 +1,72 @@
+name: Reusable Build Framework Image
+
+on:
+  workflow_call:
+    inputs:
+      security_profile:
+        required: true
+        type: string
+
+jobs:
+  build-framework:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+        with:
+          platforms: all
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Event PR
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+            echo "EVENT_TYPE=pr" >> $GITHUB_ENV
+            echo "REPOSITORY=ttl.sh/framework_${{ inputs.security_profile }}" >> $GITHUB_ENV
+      - name: Event Branch
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+            echo "EVENT_TYPE=branch" >> $GITHUB_ENV
+            echo "REPOSITORY=quay.io/kairos/framework:${{  github.ref_name }}_${{ inputs.security_profile }}" >> $GITHUB_ENV
+      - name: Login to Quay Registry
+        if: ${{ github.event_name == 'push' }}
+        run: echo ${{ secrets.QUAY_PASSWORD }} | docker login -u ${{ secrets.QUAY_USERNAME }} --password-stdin quay.io
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.REPOSITORY }}
+          tags: |
+            type=schedule
+            type=ref,event=${{ env.EVENT_TYPE }}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+      - name: print labels and tags
+        run: |
+          echo "lables: ${{ steps.meta.outputs.labels }}"
+          echo "tags: ${{ steps.meta.outputs.tags }}"
+      - name: Build and push framework
+        uses: docker/build-push-action@v5
+        with:
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          target: final
+          build-args: |
+            SECURITY_PROFILE=${{ inputs.security_profile }}
+      - name: Extract versions
+        run: |
+          docker run --name framework ${{ steps.meta.outputs.tags }} true || true
+          docker cp framework:/framework/etc/kairos/versions.yaml ./versions_${{ inputs.security_profile }}.new.yaml
+          .github/yaml2md.sh >> $GITHUB_STEP_SUMMARY
+          docker rm framework
+      - uses: actions/upload-artifact@v3
+        with:
+          name: versions_${{ inputs.security_profile }}.zip
+          path: |
+            versions_${{ inputs.security_profile }}.new.yaml
+          if-no-files-found: error

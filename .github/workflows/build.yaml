@@ -10,111 +10,33 @@ jobs:
       - uses: actions/checkout@v4
       - name: Extract versions
         run: |
-          docker run --name framework ttl.sh/framework:main true || true
-          docker cp framework:/framework/etc/kairos/versions.yaml versions_framework.old.yaml
-          docker rm framework
-          docker run --name framework_fips ttl.sh/framework_fips:main true || true
-          docker cp framework_fips:/framework/etc/kairos/versions.yaml versions_fips.old.yaml
-          docker rm framework_fips
+          docker run --name generic quay.io/kairos/framework:main_generic true || true
+          docker cp generic:/framework/etc/kairos/versions.yaml versions_generic.old.yaml
+          docker rm generic
+          docker run --name fips quay.io/kairos/framework:main_fips true || true
+          docker cp fips:/framework/etc/kairos/versions.yaml versions_fips.old.yaml
+          docker rm fips
       - uses: actions/upload-artifact@v3
         with:
           name: old_versions.zip
           path: |
-            versions_framework.old.yaml
+            versions_generic.old.yaml
             versions_fips.old.yaml
-  build-framework:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@master
-        with:
-          platforms: all
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ttl.sh/framework
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-      - name: Build and push framework
-        uses: docker/build-push-action@v5
-        with:
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          target: framework
-      - name: Extract versions
-        run: |
-          docker run --name framework ${{ steps.meta.outputs.tags }} true || true
-          docker cp framework:/framework/etc/kairos/versions.yaml versions_framework.new.yaml
-          .github/yaml2md.sh >> $GITHUB_STEP_SUMMARY
-          docker rm framework
-      - uses: actions/upload-artifact@v3
-        with:
-          name: versions.zip
-          path: |
-            versions_framework.new.yaml
-          if-no-files-found: error
-  build-framework-fips:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@master
-        with:
-          platforms: all
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ttl.sh/framework_fips
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-      - name: Build and push framework
-        uses: docker/build-push-action@v5
-        with:
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          target: framework_fips
-      - name: Extract versions
-        run: |
-          docker run --name framework ${{ steps.meta.outputs.tags }} true || true
-          docker cp framework:/framework/etc/kairos/versions.yaml versions_fips.new.yaml
-          .github/yaml2md.sh >> $GITHUB_STEP_SUMMARY
-          docker rm framework
-      - uses: actions/upload-artifact@v3
-        with:
-          name: versions_fips.zip
-          path: |
-            versions_fips.new.yaml
-          if-no-files-found: error
+  build-generic:
+    uses: ./.github/workflows/reusable-build.yaml
+    secrets: inherit 
+    with:
+      security_profile: generic
+  build-fips:
+    uses: ./.github/workflows/reusable-build.yaml
+    secrets: inherit
+    with:
+      security_profile: fips
   comment-pr:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    needs: [build-framework, build-framework-fips, get-old-versions]
+    needs: [build-generic, build-fips, get-old-versions]
     steps:
       - uses: actions/checkout@v4
       - name: Download versions
