@@ -22,13 +22,11 @@ jobs:
       - name: Event PR
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-            echo "EVENT_TYPE=pr" >> $GITHUB_ENV
             echo "REPOSITORY=ttl.sh/framework_${{ inputs.security_profile }}" >> $GITHUB_ENV
       - name: Event Branch
         if: ${{ github.event_name != 'pull_request' }}
         run: |
-            echo "EVENT_TYPE=branch" >> $GITHUB_ENV
-            echo "REPOSITORY=quay.io/kairos/framework:${{  github.ref_name }}_${{ inputs.security_profile }}" >> $GITHUB_ENV
+            echo "REPOSITORY=quay.io/kairos/framework" >> $GITHUB_ENV
       - name: Login to Quay Registry
         if: ${{ github.event_name == 'push' }}
         run: echo ${{ secrets.QUAY_PASSWORD }} | docker login -u ${{ secrets.QUAY_USERNAME }} --password-stdin quay.io
@@ -40,7 +38,8 @@ jobs:
             ${{ env.REPOSITORY }}
           tags: |
             type=schedule
-            type=ref,event=${{ env.EVENT_TYPE }}
+            type=ref,event=branch,suffix=_${{ inputs.security_profile }}
+            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
