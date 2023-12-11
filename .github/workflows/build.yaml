@@ -42,7 +42,7 @@ jobs:
       - name: Download versions
         uses: actions/download-artifact@v3
         with:
-          name: versions.zip
+          name: versions_generic.zip
       - name: Download versions fips
         uses: actions/download-artifact@v3
         with:
