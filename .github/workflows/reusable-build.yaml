@@ -64,7 +64,7 @@ jobs:
           COSIGN_YES: true
         if: ${{ github.event_name != 'pull_request' }}
         run: |
-          cosign sign ${{ steps.meta.outputs.tags }}}
+          cosign sign ${{ steps.meta.outputs.tags }}
       - name: Extract versions
         run: |
           docker run --name framework ${{ steps.meta.outputs.tags }} true || true
