@@ -10,6 +10,9 @@ on:
 jobs:
   build-framework:
     runs-on: kvm
+    permissions:
+      id-token: write  # OIDC support
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Set up QEMU
