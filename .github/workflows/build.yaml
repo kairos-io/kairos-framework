@@ -23,11 +23,17 @@ jobs:
             versions_generic.old.yaml
             versions_fips.old.yaml
   build-generic:
+    permissions:
+      id-token: write  # OIDC support
+      contents: write
     uses: ./.github/workflows/reusable-build.yaml
     secrets: inherit 
     with:
       security_profile: generic
   build-fips:
+    permissions:
+      id-token: write  # OIDC support
+      contents: write
     uses: ./.github/workflows/reusable-build.yaml
     secrets: inherit
     with:
