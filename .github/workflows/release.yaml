@@ -9,11 +9,17 @@ on:
 
 jobs:
   build-framework:
+    permissions:
+      id-token: write  # OIDC support
+      contents: write
     uses: ./.github/workflows/reusable-build.yaml
     secrets: inherit 
     with:
       security_profile: generic
   build-framework-fips:
+    permissions:
+      id-token: write  # OIDC support
+      contents: write
     uses: ./.github/workflows/reusable-build.yaml
     secrets: inherit 
     with:
