@@ -8,19 +8,15 @@ on:
       - main
 
 jobs:
-  build-framework:
+  build:
     permissions:
       id-token: write  # OIDC support
       contents: write
-    uses: ./.github/workflows/reusable-build.yaml
     secrets: inherit 
-    with:
-      security_profile: generic
-  build-framework-fips:
-    permissions:
-      id-token: write  # OIDC support
-      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        security_profile: [generic, fips]
     uses: ./.github/workflows/reusable-build.yaml
-    secrets: inherit 
     with:
-      security_profile: fips
+      security_profile: ${{ matrix.security_profile }}
