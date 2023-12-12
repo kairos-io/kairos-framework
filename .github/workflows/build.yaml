@@ -33,7 +33,7 @@ jobs:
         security_profile: [generic, fips]
     uses: ./.github/workflows/reusable-build.yaml
     with:
-      security_profile: ${{ matrix.security_profile }}}
+      security_profile: ${{ matrix.security_profile }}
   comment-pr:
     runs-on: ubuntu-latest
     permissions:
