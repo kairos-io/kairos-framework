@@ -22,27 +22,23 @@ jobs:
           path: |
             versions_generic.old.yaml
             versions_fips.old.yaml
-  build-generic:
+  build:
     permissions:
       id-token: write  # OIDC support
       contents: write
-    uses: ./.github/workflows/reusable-build.yaml
     secrets: inherit 
-    with:
-      security_profile: generic
-  build-fips:
-    permissions:
-      id-token: write  # OIDC support
-      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        security_profile: [generic, fips]
     uses: ./.github/workflows/reusable-build.yaml
-    secrets: inherit
     with:
-      security_profile: fips
+      security_profile: ${{ matrix.security_profile }}}
   comment-pr:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    needs: [build-generic, build-fips, get-old-versions]
+    needs: [build, get-old-versions]
     steps:
       - uses: actions/checkout@v4
       - name: Download versions
