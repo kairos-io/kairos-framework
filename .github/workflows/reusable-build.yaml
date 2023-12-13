@@ -71,7 +71,7 @@ jobs:
           cosign sign ${{ env.REPOSITORY }}:${{ steps.meta.outputs.version }}
       - name: Extract versions
         run: |
-          docker run --name framework ${{ steps.meta.outputs.tags }} true || true
+          docker run --name framework ${{ env.REPOSITORY }}:${{ steps.meta.outputs.version }} true || true
           docker cp framework:/etc/kairos/versions.yaml ./versions_${{ inputs.security_profile }}.new.yaml
           .github/yaml2md.sh >> $GITHUB_STEP_SUMMARY
           docker rm framework
