@@ -65,6 +65,7 @@ jobs:
       - name: Build and push framework
         uses: docker/build-push-action@v5
         with:
+          sbom: false
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
