@@ -52,6 +52,7 @@ jobs:
         run: |
           echo "lables: ${{ steps.meta.outputs.labels }}"
           echo "tags: ${{ steps.meta.outputs.tags }}"
+          echo "version: ${{ steps.meta.outputs.version }}"
       - name: Build and push framework
         uses: docker/build-push-action@v5
         with:
