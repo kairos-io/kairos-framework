@@ -18,4 +18,11 @@
 
 <hr>
 
-Kairos Framework Images, come with all the packages that will be used commonly across distributions in order to convert a Linux Distribution into a Kairos Linux.
+Kairos Framework Images, include all the packages that will be used commonly across distributions in order to convert a Linux Distribution into a Kairos Linux.
+
+## Security Profile
+
+The major distinction between the two types of images is the security profile:
+
+- generic: includes the traditional packages, this is what all released Kairos artifacts use
+- fips: includes FIPS packages which you can use to build a Kairos image that follows the FIPS requirements if you also pair it with a FIPS complient Linux Distribution
