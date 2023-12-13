@@ -42,12 +42,12 @@ jobs:
           images: |
             ${{ env.REPOSITORY }}
           tags: |
-            type=schedule
+            type=schedule,suffix=_${{ inputs.security_profile }}
             type=ref,event=branch,suffix=_${{ inputs.security_profile }}
             type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
+            type=semver,pattern={{version}},suffix=_${{ inputs.security_profile }}
+            type=semver,pattern={{major}}.{{minor}},suffix=_${{ inputs.security_profile }}
+            type=semver,pattern={{major}},suffix=_${{ inputs.security_profile }}
       - name: print labels and tags
         run: |
           echo "lables: ${{ steps.meta.outputs.labels }}"
