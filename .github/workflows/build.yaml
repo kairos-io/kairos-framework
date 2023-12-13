@@ -10,8 +10,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Extract versions
         run: |
-          docker run --name generic quay.io/kairos/framework:main_generic true || true
-          docker cp generic:/framework/etc/kairos/versions.yaml versions_generic.old.yaml
+          docker run --name generic quay.io/kairos/framework:main true || true
+          docker cp generic:/framework/etc/kairos/versions.yaml versions.old.yaml
           docker rm generic
           docker run --name fips quay.io/kairos/framework:main_fips true || true
           docker cp fips:/framework/etc/kairos/versions.yaml versions_fips.old.yaml
@@ -20,7 +20,7 @@ jobs:
         with:
           name: old_versions.zip
           path: |
-            versions_generic.old.yaml
+            versions.old.yaml
             versions_fips.old.yaml
   build:
     permissions:
