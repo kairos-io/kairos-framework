@@ -27,7 +27,7 @@ jobs:
       - name: Event PR
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-            echo "REPOSITORY=ttl.sh/framework_${{ inputs.security_profile }}" >> $GITHUB_ENV
+            echo "REPOSITORY=ttl.sh/kairos-framework" >> $GITHUB_ENV
       - name: Event Branch
         if: ${{ github.event_name != 'pull_request' }}
         run: |
@@ -41,13 +41,15 @@ jobs:
         with:
           images: |
             ${{ env.REPOSITORY }}
+          flavor: |
+            suffix=_${{ inputs.security_profile }},onlatest=true
           tags: |
-            type=schedule,suffix=_${{ inputs.security_profile }}
-            type=ref,event=branch,suffix=_${{ inputs.security_profile }}
+            type=schedule
+            type=ref,event=branch
             type=ref,event=pr
-            type=semver,pattern={{version}},suffix=_${{ inputs.security_profile }}
-            type=semver,pattern={{major}}.{{minor}},suffix=_${{ inputs.security_profile }}
-            type=semver,pattern={{major}},suffix=_${{ inputs.security_profile }}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
       - name: print labels and tags
         run: |
           echo "lables: ${{ steps.meta.outputs.labels }}"
