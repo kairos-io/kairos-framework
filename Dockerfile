@@ -42,5 +42,6 @@ RUN rm -rf /framework/var/luet
 RUN rm -rf /framework/var/cache
 
 FROM scratch AS final
+COPY repositories.yaml /etc/luet/luet.yaml
 COPY --from=post /framework /
 COPY --from=luet /usr/bin/luet /usr/bin/luet
