@@ -35,8 +35,10 @@ jobs:
         run: |
             if [[ "${{ inputs.security_profile }}" == "fips" ]]; then
               echo "SUFFIX=-fips" >> $GITHUB_ENV
+              echo "FLAVOR=suffix=-fips,onlatest=true" >> $GITHUB_ENV
             else
-              echo "SUFFIX=''" >> $GITHUB_ENV
+              echo "SUFFIX=" >> $GITHUB_ENV
+              echo "FLAVOR=" >> $GITHUB_ENV
             fi
       - name: Login to Quay Registry
         if: ${{ github.event_name == 'push' }}
@@ -47,8 +49,7 @@ jobs:
         with:
           images: |
             ${{ env.REPOSITORY }}
-          flavor: |
-            suffix=${{ env.SUFFIX }},onlatest=true
+          flavor: ${{ env.FLAVOR }}
           tags: |
             type=schedule
             type=ref,event=branch
