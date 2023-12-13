@@ -81,7 +81,7 @@ jobs:
         run: |
           docker run --name framework ${{ env.REPOSITORY }}:${{ steps.meta.outputs.version }} true || true
           docker cp framework:/etc/kairos/versions.yaml ./versions${{ env.SUFFIX }}.new.yaml
-          .github/yaml2md.sh >> $GITHUB_STEP_SUMMARY
+          .github/yaml2md.sh ./versions${{ env.SUFFIX }}.new.yaml >> $GITHUB_STEP_SUMMARY
           docker rm framework
       - uses: actions/upload-artifact@v3
         with:
