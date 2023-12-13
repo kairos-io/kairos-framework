@@ -24,14 +24,20 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Install Cosign
         uses: sigstore/cosign-installer@main
-      - name: Event PR
-        if: ${{ github.event_name == 'pull_request' }}
+      - name: Calculate Repository
         run: |
-            echo "REPOSITORY=ttl.sh/kairos-framework" >> $GITHUB_ENV
-      - name: Event Branch
-        if: ${{ github.event_name != 'pull_request' }}
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              echo "REPOSITORY=ttl.sh/kairos-framework" >> $GITHUB_ENV
+            else
+              echo "REPOSITORY=quay.io/kairos/framework" >> $GITHUB_ENV
+            fi
+      - name: Calculate Suffix
         run: |
-            echo "REPOSITORY=quay.io/kairos/framework" >> $GITHUB_ENV
+            if [[ "${{ inputs.security_profile }}" == "fips" ]]; then
+              echo "SUFFIX=-fips" >> $GITHUB_ENV
+            else
+              echo "SUFFIX=''" >> $GITHUB_ENV
+            fi
       - name: Login to Quay Registry
         if: ${{ github.event_name == 'push' }}
         run: echo ${{ secrets.QUAY_PASSWORD }} | docker login -u ${{ secrets.QUAY_USERNAME }} --password-stdin quay.io
@@ -42,7 +48,7 @@ jobs:
           images: |
             ${{ env.REPOSITORY }}
           flavor: |
-            suffix=_${{ inputs.security_profile }},onlatest=true
+            suffix=${{ env.SUFFIX }},onlatest=true
           tags: |
             type=schedule
             type=ref,event=branch
@@ -74,12 +80,12 @@ jobs:
       - name: Extract versions
         run: |
           docker run --name framework ${{ env.REPOSITORY }}:${{ steps.meta.outputs.version }} true || true
-          docker cp framework:/etc/kairos/versions.yaml ./versions_${{ inputs.security_profile }}.new.yaml
+          docker cp framework:/etc/kairos/versions.yaml ./versions${{ env.SUFFIX }}.new.yaml
           .github/yaml2md.sh >> $GITHUB_STEP_SUMMARY
           docker rm framework
       - uses: actions/upload-artifact@v3
         with:
-          name: versions_${{ inputs.security_profile }}.zip
+          name: versions${{ env.SUFFIX }}.zip
           path: |
-            versions_${{ inputs.security_profile }}.new.yaml
+            versions${{ env.SUFFIX }}.new.yaml
           if-no-files-found: error
