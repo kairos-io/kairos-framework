@@ -43,3 +43,4 @@ RUN rm -rf /framework/var/cache
 
 FROM scratch AS final
 COPY --from=post /framework /
+COPY --from=luet /usr/bin/luet /usr/bin/luet
