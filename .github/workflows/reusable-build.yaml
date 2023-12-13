@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-framework:
-    runs-on: kvm
+    runs-on: ubuntu-latest
     permissions:
       id-token: write  # OIDC support
       contents: write
