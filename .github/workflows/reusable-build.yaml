@@ -85,7 +85,7 @@ jobs:
           docker cp framework:/etc/kairos/versions.yaml ./versions${{ env.SUFFIX }}.new.yaml
           .github/yaml2md.sh ./versions${{ env.SUFFIX }}.new.yaml >> $GITHUB_STEP_SUMMARY
           docker rm framework
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: versions${{ env.SUFFIX }}.zip
           path: |
