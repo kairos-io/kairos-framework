@@ -13,7 +13,7 @@ jobs:
           docker run --name generic quay.io/kairos/framework:main true || true
           docker cp generic:/etc/kairos/versions.yaml versions.old.yaml
           docker rm generic
-          docker run --name fips quay.io/kairos/framework:main_fips true || true
+          docker run --name fips quay.io/kairos/framework:main-fips true || true
           docker cp fips:/etc/kairos/versions.yaml versions_fips.old.yaml
           docker rm fips
       - uses: actions/upload-artifact@v4
