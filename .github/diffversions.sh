@@ -6,7 +6,7 @@
 # It expects the following files to be present in the current directory:
 # - versions.old.yaml -> from the old repository framework image
 # - versions.new.yaml -> from the new repository framework image
-# - versions_fips.old.yaml -> from the old repository fips image
+# - versions-fips.old.yaml -> from the old repository fips image
 # - versions_fips.new.yaml -> from the new repository fips image
 
 stat versions.old.yaml > /dev/null 2>&1
@@ -19,7 +19,7 @@ if [[ $? != 0 ]]; then
   echo "versions.new.yaml not found"
   exit 1
 fi
-stat versions_fips.old.yaml > /dev/null 2>&1
+stat versions-fips.old.yaml > /dev/null 2>&1
 if [[ $? != 0 ]]; then
   echo "versions_fips.old.yaml not found"
   exit 1
@@ -32,7 +32,7 @@ fi
 
 # Merge and sort versions files
 yq -P '.|=sort_by(.name, .category)|.[]|[{"name": .name, "category": .category, "version": .version}]' versions.old.yaml versions_fips.old.yaml > merged.old.yaml
-yq -P '.|=sort_by(.name, .category)|.[]|[{"name": .name, "category": .category, "version": .version}]' versions.new.yaml versions_fips.new.yaml > merged.new.yaml
+yq -P '.|=sort_by(.name, .category)|.[]|[{"name": .name, "category": .category, "version": .version}]' versions.new.yaml versions-fips.new.yaml > merged.new.yaml
 # Remove yaml separator
 sed -i 's|---||g' merged.old.yaml
 sed -i 's|---||g' merged.new.yaml
