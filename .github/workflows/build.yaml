@@ -14,14 +14,14 @@ jobs:
           docker cp generic:/etc/kairos/versions.yaml versions.old.yaml
           docker rm generic
           docker run --name fips quay.io/kairos/framework:main-fips true || true
-          docker cp fips:/etc/kairos/versions.yaml versions_fips.old.yaml
+          docker cp fips:/etc/kairos/versions.yaml versions-fips.old.yaml
           docker rm fips
       - uses: actions/upload-artifact@v4
         with:
           name: old_versions.zip
           path: |
             versions.old.yaml
-            versions_fips.old.yaml
+            versions-fips.old.yaml
   build:
     permissions:
       id-token: write  # OIDC support
