@@ -7,7 +7,7 @@
 # - versions.old.yaml -> from the old repository framework image
 # - versions.new.yaml -> from the new repository framework image
 # - versions-fips.old.yaml -> from the old repository fips image
-# - versions_fips.new.yaml -> from the new repository fips image
+# - versions-fips.new.yaml -> from the new repository fips image
 
 stat versions.old.yaml > /dev/null 2>&1
 if [[ $? != 0 ]]; then
@@ -24,14 +24,14 @@ if [[ $? != 0 ]]; then
   echo "versions_fips.old.yaml not found"
   exit 1
 fi
-stat versions_fips.new.yaml > /dev/null 2>&1
+stat versions-fips.new.yaml > /dev/null 2>&1
 if [[ $? != 0 ]]; then
   echo "versions_fips.new.yaml not found"
   exit 1
 fi
 
 # Merge and sort versions files
-yq -P '.|=sort_by(.name, .category)|.[]|[{"name": .name, "category": .category, "version": .version}]' versions.old.yaml versions_fips.old.yaml > merged.old.yaml
+yq -P '.|=sort_by(.name, .category)|.[]|[{"name": .name, "category": .category, "version": .version}]' versions.old.yaml versions-fips.old.yaml > merged.old.yaml
 yq -P '.|=sort_by(.name, .category)|.[]|[{"name": .name, "category": .category, "version": .version}]' versions.new.yaml versions-fips.new.yaml > merged.new.yaml
 # Remove yaml separator
 sed -i 's|---||g' merged.old.yaml
