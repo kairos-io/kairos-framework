@@ -42,15 +42,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Download versions
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: versions.zip
       - name: Download versions fips
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: versions_fips.zip
       - name: Download old versions
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: old_versions.zip
       - name: Generate PR text
