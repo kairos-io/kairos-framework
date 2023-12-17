@@ -48,7 +48,7 @@ jobs:
       - name: Download versions fips
         uses: actions/download-artifact@v4
         with:
-          name: versions_fips.zip
+          name: versions-fips.zip
       - name: Download old versions
         uses: actions/download-artifact@v4
         with:
