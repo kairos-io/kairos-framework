@@ -11,12 +11,12 @@
   "timezone": "Europe/Brussels",
   "packageRules": [
     {
-      "groupName": "repobump",
+      "groupName": "repositories",
       "matchPackagePatterns": ["^quay.io/kairos/packages*"]
     },
     {
       "matchPackagePatterns": ["^quay.io/kairos/packages*"],
-      "versioning": "loose"
+      "versioning": "regex:^(?<major>\\d{14})(?<compatibility>-repository\\.yaml)"
     },
     {
       "matchUpdateTypes": ["patch"],
