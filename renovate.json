@@ -30,8 +30,7 @@
       ],
       "matchStrings": [
         "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s+reference:\\s(?<currentValue>.*?)\\s"
-      ],
-      "versioningTemplate": "{{#if versioning}}{{versioning}}{{else}}docker{{/if}}"
+      ]
     }
     ]
 }
