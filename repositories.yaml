@@ -10,7 +10,7 @@ repositories:
     urls:
       - "quay.io/kairos/packages"
     # renovate: datasource=docker depName=quay.io/kairos/packages
-    reference: 20231221085350-repository.yaml
+    reference: 20231228113856-repository.yaml
   - !!merge <<: *kairos
     arch: arm64
     urls:
