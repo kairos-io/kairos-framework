@@ -16,7 +16,7 @@
     },
     {
       "matchPackagePatterns": ["^quay.io/kairos/packages*"],
-      "versioning": "regex:^(?<major>\\d+)(-(?<compatibility>repository.yaml))?$"
+      "versioning": "loose"
     },
     {
       "matchUpdateTypes": ["patch"],
@@ -29,7 +29,7 @@
         "^repositories.yaml$"
       ],
       "matchStrings": [
-        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s+reference:\\s(?<currentValue>.*?)\\s"
+        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)?\\s+reference:\\s(?<currentValue>.*?)\\s"
       ]
     }
     ]
