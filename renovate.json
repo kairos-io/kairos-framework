@@ -11,6 +11,12 @@
   "timezone": "Europe/Brussels",
   "packageRules": [
     {
+      "groupName": "repobump",
+      "matchPackagePatterns": [
+        "^quay.io/kairos/packages*"
+      ]
+    },
+    {
       "matchUpdateTypes": ["patch"],
       "automerge": true
     }
