@@ -12,9 +12,11 @@
   "packageRules": [
     {
       "groupName": "repobump",
-      "matchPackagePatterns": [
-        "^quay.io/kairos/packages*"
-      ]
+      "matchPackagePatterns": ["^quay.io/kairos/packages*"]
+    },
+    {
+      "matchPackagePatterns": ["^quay.io/kairos/packages*"],
+      "versioning": "regex:^(?<major>\\d+)-repository.yaml$"
     },
     {
       "matchUpdateTypes": ["patch"],
