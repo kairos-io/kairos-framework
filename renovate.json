@@ -16,7 +16,7 @@
     },
     {
       "matchPackagePatterns": ["^quay.io/kairos/packages*"],
-      "versioning": "regex:^(?<major>\\d+)-repository.yaml$"
+      "versioning": "regex:^(?<major>.*)-repository.yaml"
     },
     {
       "matchUpdateTypes": ["patch"],
