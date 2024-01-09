@@ -12,7 +12,6 @@ RUN luet install -y --config repositories.yaml --system-target /framework \
   dracut/kairos-network \
   dracut/kairos-sysext \
   system/suc-upgrade \
-  system/grub2-efi \
   static/grub-config \
   static/kairos-overlay-files \
   initrd/alpine
