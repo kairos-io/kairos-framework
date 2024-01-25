@@ -38,7 +38,6 @@ RUN luet database --system-target /framework get-all-installed --output /framewo
 # luet cleanup
 RUN luet cleanup --system-target /framework
 RUN rm -rf /framework/var/luet
-RUN rm -rf /framework/var/cache
 
 FROM scratch AS final
 COPY repositories.yaml /etc/luet/luet.yaml
