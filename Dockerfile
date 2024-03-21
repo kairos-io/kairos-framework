@@ -8,7 +8,6 @@ ENV LUET_NOLOCK=true
 COPY --from=luet /usr/bin/luet /usr/bin/luet
 COPY repositories.yaml /repositories.yaml
 RUN luet install -y --config repositories.yaml --system-target /framework \
-  dracut/immucore \
   dracut/kairos-network \
   dracut/kairos-sysext \
   system/suc-upgrade \
