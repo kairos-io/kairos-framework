@@ -6,6 +6,12 @@ FROM quay.io/kairos/packages:immucore-system-0.1.17-2 AS immucore-system
 FROM quay.io/kairos/packages:kairos-agent-system-2.5.1 AS kairos-agent
 FROM quay.io/kairos/packages:kairos-agent-fips-2.5.1 AS kairos-agent-fips
 
+FROM quay.io/kairos/packages:kcrypt-challenger-system-0.6.0-cve1 AS kcrypt-challenger
+FROM quay.io/kairos/packages:kcrypt-challenger-fips-0.6.0-cve1 AS kcrypt-challenger-fips
+
+FROM quay.io/kairos/packages:kcrypt-fips-0.7.0-cve1 AS kcrypt-fips
+FROM quay.io/kairos/packages:kcrypt-system-0.7.0-cve1 AS kcrypt
+
 FROM quay.io/luet/base:0.35.1 AS luet
 
 # Common packages for all images
@@ -31,6 +37,8 @@ RUN luet install -y --config repositories.yaml --system-target /framework \
     system/kairos-agent
 COPY --from=immucore-system / /framework/
 COPY --from=kairos-agent / /framework/
+COPY --from=kcrypt-challenger / /framework/
+COPY --from=kcrypt / /framework/
 
 FROM base AS fips
 RUN luet install -y --config repositories.yaml --system-target /framework \
@@ -40,6 +48,8 @@ RUN luet install -y --config repositories.yaml --system-target /framework \
     fips/kairos-agent
 COPY --from=immucore-fips / /framework/
 COPY --from=kairos-agent-fips / /framework/
+COPY --from=kcrypt-challenger-fips / /framework/
+COPY --from=kcrypt-fips / /framework/
 
 # Final images
 FROM ${SECURITY_PROFILE} AS post
