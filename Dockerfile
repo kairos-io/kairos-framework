@@ -1,6 +1,6 @@
 ARG SECURITY_PROFILE=generic
 
-FROM quay.io/luet/base:0.35.1 AS luet
+FROM quay.io/luet/base:0.35.2 AS luet
 
 # Common packages for all images
 FROM alpine AS base
