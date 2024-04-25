@@ -1,5 +1,19 @@
 ARG SECURITY_PROFILE=generic
 
+
+# Backport for kairos 3.0.x
+# Bumps yip for user id reuse
+# Fixes hooks in uki install
+FROM quay.io/kairos/packages:kairos-agent-system-2.8.12 AS kairos-agent
+FROM quay.io/kairos/packages:kairos-agent-fips-2.8.12 AS kairos-agent-fips
+
+# Bump fixes for kairos 3.0.x
+# Adds sync calls before and after mounting
+# Fixes mounting oem before running rootfs stage under uki
+# Bumps yip for user id reuse
+FROM quay.io/kairos/packages:immucore-fips-0.1.26 AS immucore-fips
+FROM quay.io/kairos/packages:immucore-system-0.1.26 AS immucore
+
 FROM quay.io/luet/base:0.35.1 AS luet
 
 # Common packages for all images
@@ -21,6 +35,8 @@ RUN luet install -y --config repositories.yaml --system-target /framework \
     system/kcrypt-challenger \
     system/immucore \
     system/kairos-agent
+COPY --from=kairos-agent / /framework/
+COPY --from=immucore / /framework/
 
 FROM base AS fips
 RUN luet install -y --config repositories.yaml --system-target /framework \
@@ -28,6 +44,8 @@ RUN luet install -y --config repositories.yaml --system-target /framework \
     fips/kcrypt-challenger \
     fips/immucore \
     fips/kairos-agent
+COPY --from=kairos-agent-fips / /framework/
+COPY --from=immucore-fips / /framework/
 
 # Final images
 FROM ${SECURITY_PROFILE} AS post
