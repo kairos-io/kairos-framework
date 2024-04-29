@@ -4,8 +4,8 @@ ARG SECURITY_PROFILE=generic
 # Backport for kairos 3.0.x
 # Bumps yip for user id reuse
 # Fixes hooks in uki install
-FROM quay.io/kairos/packages:kairos-agent-system-2.8.12 AS kairos-agent
-FROM quay.io/kairos/packages:kairos-agent-fips-2.8.12 AS kairos-agent-fips
+FROM quay.io/kairos/packages:kairos-agent-system-2.8.13 AS kairos-agent
+FROM quay.io/kairos/packages:kairos-agent-fips-2.8.13 AS kairos-agent-fips
 
 # Bump fixes for kairos 3.0.x
 # Adds sync calls before and after mounting
