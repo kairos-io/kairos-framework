@@ -5,8 +5,9 @@ ARG SECURITY_PROFILE=generic
 
 # Bumps yip for user id reuse
 # Fixes hooks in uki install
-FROM quay.io/kairos/packages:kairos-agent-system-2.8.17 AS kairos-agent
-FROM quay.io/kairos/packages:kairos-agent-fips-2.8.17 AS kairos-agent-fips
+# kcrypt bump for: Trigger udev to populate disk info
+FROM quay.io/kairos/packages:kairos-agent-system-2.8.18 AS kairos-agent
+FROM quay.io/kairos/packages:kairos-agent-fips-2.8.18 AS kairos-agent-fips
 
 # Adds sync calls before and after mounting
 # Fixes mounting oem before running rootfs stage under uki
@@ -15,8 +16,8 @@ FROM quay.io/kairos/packages:immucore-fips-0.1.28 AS immucore-fips
 FROM quay.io/kairos/packages:immucore-system-0.1.28 AS immucore
 
 # Trigger udev to populate disk info
-FROM quay.io/kairos/packages:kcrypt-fips-0.11.2 AS kcrypt-fips
-FROM quay.io/kairos/packages:kcrypt-system-0.11.2 AS kcrypt
+FROM quay.io/kairos/packages:kcrypt-fips-0.10.2 AS kcrypt-fips
+FROM quay.io/kairos/packages:kcrypt-system-0.10.2 AS kcrypt
 
 FROM quay.io/luet/base:0.35.1 AS luet
 
