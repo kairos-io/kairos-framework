@@ -28,8 +28,8 @@ FROM quay.io/kairos/packages-arm64:kcrypt-system-0.10.5 AS kcrypt-arm64
 
 FROM quay.io/kairos/packages:kcrypt-challenger-system-0.7.0-1 AS kcrypt-challenger-amd64
 FROM quay.io/kairos/packages:kcrypt-challenger-fips-0.7.0-1 AS kcrypt-challenger-fips-amd64
-FROM quay.io/kairos/packages-arm64:kcrypt-challenger-system-0.7.0-2 AS kcrypt-challenger-amd64
-FROM quay.io/kairos/packages-arm64:kcrypt-challenger-fips-0.7.0-2 AS kcrypt-challenger-fips-amd64
+FROM quay.io/kairos/packages-arm64:kcrypt-challenger-system-0.7.0-2 AS kcrypt-challenger-arm64
+FROM quay.io/kairos/packages-arm64:kcrypt-challenger-fips-0.7.0-2 AS kcrypt-challenger-fips-arm64
 
      
 FROM quay.io/kairos/packages:luet-utils-0.35.2 AS luet-amd64
