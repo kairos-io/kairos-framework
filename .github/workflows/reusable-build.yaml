@@ -63,7 +63,7 @@ jobs:
           echo "tags: ${{ steps.meta.outputs.tags }}"
           echo "version: ${{ steps.meta.outputs.version }}"
       - name: Build and push framework
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           sbom: false
           platforms: linux/amd64,linux/arm64
