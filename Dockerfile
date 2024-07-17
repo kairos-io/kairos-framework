@@ -2,14 +2,16 @@ ARG SECURITY_PROFILE=generic
 FROM quay.io/kairos/packages:luet-utils-0.35.2 AS luet
 FROM quay.io/kairos/packages-arm64:luet-utils-0.35.2 AS luet-arm64
 
-# Common packages for all images
-FROM alpine AS base
-ARG TARGETARCH
+FROM alpine AS alpine-amd64
 ENV LUET_NOLOCK=true
-COPY --from=luet /usr/bin/luet /tmp/luet
-COPY --from=luet-arm64 /usr/bin/luet /tmp/luet-arm64
-RUN if [ "$TARGETARCH" = "arm64" ]; then mv /tmp/luet-arm64 /usr/bin/luet; else mv /tmp/luet /usr/bin/luet; fi
-RUN rm /tmp/luet*
+COPY --from=luet /usr/bin/luet /usr/bin/luet
+
+FROM alpine AS alpine-arm64
+ENV LUET_NOLOCK=true
+COPY --from=luet-arm64 /usr/bin/luet /usr/bin/luet
+
+# Common packages for all images
+FROM alpine-${TARGETARCH} AS base
 COPY repositories.yaml /repositories.yaml
 RUN luet install -y --config repositories.yaml --system-target /framework \
   dracut/kairos-network \
