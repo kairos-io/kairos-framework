@@ -62,12 +62,13 @@ jobs:
           echo "lables: ${{ steps.meta.outputs.labels }}"
           echo "tags: ${{ steps.meta.outputs.tags }}"
           echo "version: ${{ steps.meta.outputs.version }}"
+      # Build amd64 image to scan for vulnerabilities
       - name: Build framework
         uses: docker/build-push-action@v6
         with:
           load: true
           sbom: false
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -90,7 +91,6 @@ jobs:
           fail-build: true
           severity-cutoff: critical
           output-format: 'sarif'
-
       - name: Upload Trivy scan results to GitHub Security tab
         if: ${{ github.event_name == 'push' }}
         uses: github/codeql-action/upload-sarif@v2
@@ -101,7 +101,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: ${{ steps.grype.outputs.sarif }}
-      - name: Push framework
+      - name: Build and push framework
         uses: docker/build-push-action@v6
         with:
           sbom: false
