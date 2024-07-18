@@ -62,7 +62,46 @@ jobs:
           echo "lables: ${{ steps.meta.outputs.labels }}"
           echo "tags: ${{ steps.meta.outputs.tags }}"
           echo "version: ${{ steps.meta.outputs.version }}"
-      - name: Build and push framework
+      - name: Build framework
+        uses: docker/build-push-action@v6
+        with:
+          local: true
+          sbom: false
+          platforms: linux/amd64,linux/arm64
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          target: final
+          build-args: |
+            SECURITY_PROFILE=${{ inputs.security_profile }}
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: ${{ steps.meta.outputs.tags }}
+          exit-code: '1'
+          severity: 'CRITICAL'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+      - name: Run Grype vulnerability scanner
+        id: grype
+        uses: anchore/scan-action@v3
+        with:
+          image: ${{ steps.meta.outputs.tags }}
+          fail-build: true
+          severity-cutoff: critical
+          output-format: 'sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        if: ${{ github.event_name == 'push' }}
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+      - name: Upload Grype scan results to GitHub Security tab
+        if: ${{ github.event_name == 'push' }}
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.grype.outputs.sarif }}
+      - name: Push framework
         uses: docker/build-push-action@v6
         with:
           sbom: false
