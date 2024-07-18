@@ -96,7 +96,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         uses: aquasecurity/trivy-action@0.24.0
         with:
-          image-ref: ${{ steps.meta.outputs.tags }}
+          image-ref: ${{ env.REPOSITORY }}:${{ steps.meta.outputs.version }}
           format: 'sarif'
           output: 'trivy-results.sarif'
       - name: Run Grype vulnerability scanner on push
@@ -104,7 +104,7 @@ jobs:
         id: grype
         uses: anchore/scan-action@v4
         with:
-          image: ${{ steps.meta.outputs.tags }}
+          image: ${{ env.REPOSITORY }}:${{ steps.meta.outputs.version }}
           severity-cutoff: critical
           output-format: 'sarif'
           fail-build: false
