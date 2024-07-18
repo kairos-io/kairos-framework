@@ -83,6 +83,7 @@ jobs:
           exit-code: '1'
           format: 'github'
           severity: 'CRITICAL'
+          github-pat: ${{ secrets.GITHUB_TOKEN }}
       - name: Run Grype vulnerability scanner on PR
         if: ${{ github.event_name == 'pull_request' }}
         uses: anchore/scan-action@v3
@@ -99,6 +100,7 @@ jobs:
           format: 'sarif'
           output: 'trivy-results.sarif'
       - name: Run Grype vulnerability scanner on push
+        if: ${{ github.event_name == 'push' }}
         id: grype
         uses: anchore/scan-action@v3
         with:
