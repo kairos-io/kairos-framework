@@ -75,21 +75,37 @@ jobs:
           target: final
           build-args: |
             SECURITY_PROFILE=${{ inputs.security_profile }}
-      - name: Run Trivy vulnerability scanner
+      - name: Run Trivy vulnerability scanner on PR
+        if: ${{ github.event_name == 'pull_request' }}
         uses: aquasecurity/trivy-action@0.20.0
         with:
           image-ref: ${{ steps.meta.outputs.tags }}
-          #exit-code: '1'
+          exit-code: '1'
+          format: 'github'
+          severity: 'critical'
+      - name: Run Grype vulnerability scanner on PR
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: anchore/scan-action@v3
+        with:
+          image: ${{ steps.meta.outputs.tags }}
+          severity-cutoff: critical
+          output-format: 'table'
+          fail-build: true
+      - name: Run Trivy vulnerability scanner on push
+        if: ${{ github.event_name == 'push' }}
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: ${{ steps.meta.outputs.tags }}
           format: 'sarif'
           output: 'trivy-results.sarif'
-      - name: Run Grype vulnerability scanner
+      - name: Run Grype vulnerability scanner on push
         id: grype
         uses: anchore/scan-action@v3
         with:
           image: ${{ steps.meta.outputs.tags }}
-          #fail-build: true
           severity-cutoff: critical
           output-format: 'sarif'
+          fail-build: false
       - name: Upload Trivy scan results to GitHub Security tab
         if: ${{ github.event_name == 'push' }}
         uses: github/codeql-action/upload-sarif@v2
