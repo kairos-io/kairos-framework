@@ -81,9 +81,8 @@ jobs:
         with:
           image-ref: ${{ steps.meta.outputs.tags }}
           exit-code: '1'
-          format: 'github'
+          format: 'table'
           severity: 'CRITICAL'
-          github-pat: ${{ secrets.GITHUB_TOKEN }}
       - name: Run Grype vulnerability scanner on PR
         if: ${{ github.event_name == 'pull_request' }}
         uses: anchore/scan-action@v3
