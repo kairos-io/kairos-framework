@@ -65,7 +65,7 @@ jobs:
       - name: Build framework
         uses: docker/build-push-action@v6
         with:
-          local: true
+          load: true
           sbom: false
           platforms: linux/amd64,linux/arm64
           push: false
