@@ -26,6 +26,7 @@ jobs:
     permissions:
       id-token: write  # OIDC support
       contents: write
+      security-events: write
     secrets: inherit 
     strategy:
       fail-fast: false
