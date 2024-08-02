@@ -1,17 +1,10 @@
 ARG SECURITY_PROFILE=generic
-FROM quay.io/kairos/packages:luet-utils-0.35.2 AS luet
-FROM quay.io/kairos/packages-arm64:luet-utils-0.35.2 AS luet-arm64
+# renovate: datasource=docker depName=quay.io/luet/base versioning:semver
+FROM quay.io/luet/base:0.35.4 AS luet
 
-FROM alpine AS alpine-amd64
+FROM alpine AS base
 ENV LUET_NOLOCK=true
 COPY --from=luet /usr/bin/luet /usr/bin/luet
-
-FROM alpine AS alpine-arm64
-ENV LUET_NOLOCK=true
-COPY --from=luet-arm64 /usr/bin/luet /usr/bin/luet
-
-# Common packages for all images
-FROM alpine-${TARGETARCH} AS base
 COPY repositories.yaml /repositories.yaml
 RUN luet install -y --config repositories.yaml --system-target /framework \
   dracut/kairos-network \
@@ -45,7 +38,6 @@ RUN luet cleanup --system-target /framework
 RUN rm -rf /framework/var/luet
 
 FROM scratch AS final
-ARG TARGETARCH
 COPY repositories.yaml /etc/luet/luet.yaml
 COPY --from=post /framework /
 COPY --from=post /usr/bin/luet /usr/bin/luet
