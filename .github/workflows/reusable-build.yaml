@@ -78,7 +78,7 @@ jobs:
             SECURITY_PROFILE=${{ inputs.security_profile }}
       - name: Run Trivy vulnerability scanner on PR
         if: ${{ github.event_name == 'pull_request' }}
-        uses: aquasecurity/trivy-action@0.25.0
+        uses: aquasecurity/trivy-action@0.26.0
         with:
           image-ref: ${{ steps.meta.outputs.tags }}
           exit-code: '1'
@@ -94,7 +94,7 @@ jobs:
           fail-build: true
       - name: Run Trivy vulnerability scanner on push
         if: ${{ github.event_name == 'push' }}
-        uses: aquasecurity/trivy-action@0.25.0
+        uses: aquasecurity/trivy-action@0.26.0
         with:
           image-ref: ${{ env.REPOSITORY }}:${{ steps.meta.outputs.version }}
           format: 'sarif'
