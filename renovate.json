@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
   "schedule": [
     "after 11pm every weekday",
@@ -12,14 +12,20 @@
   "packageRules": [
     {
       "groupName": "repositories",
-      "matchPackagePatterns": ["^quay.io/kairos/packages*"]
+      "matchPackageNames": [
+        "/^quay.io/kairos/packages*/"
+      ]
     },
     {
-      "matchPackagePatterns": ["^quay.io/kairos/packages*"],
-      "versioning": "regex:^(?<major>\\d{12})-git(?<patch>[a-f0-9]{8})-repository\\.yaml$"
+      "versioning": "regex:^(?<major>\\d{12})-git(?<patch>[a-f0-9]{8})-repository\\.yaml$",
+      "matchPackageNames": [
+        "/^quay.io/kairos/packages*/"
+      ]
     },
     {
-      "matchUpdateTypes": ["patch"],
+      "matchUpdateTypes": [
+        "patch"
+      ],
       "automerge": true
     },
     {
@@ -32,8 +38,9 @@
       ]
     }
   ],
-  "regexManagers": [
+  "customManagers": [
     {
+      "customType": "regex",
       "fileMatch": [
         "^repositories.yaml$"
       ],
@@ -41,5 +48,5 @@
         "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)?\\s+reference:\\s(?<currentValue>.*?)\\s"
       ]
     }
-    ]
+  ]
 }
