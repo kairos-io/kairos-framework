@@ -86,7 +86,7 @@ jobs:
           severity: 'CRITICAL'
       - name: Run Grype vulnerability scanner on PR
         if: ${{ github.event_name == 'pull_request' }}
-        uses: anchore/scan-action@v5
+        uses: anchore/scan-action@v6
         with:
           image: ${{ steps.meta.outputs.tags }}
           severity-cutoff: critical
@@ -102,7 +102,7 @@ jobs:
       - name: Run Grype vulnerability scanner on push
         if: ${{ github.event_name == 'push' }}
         id: grype
-        uses: anchore/scan-action@v5
+        uses: anchore/scan-action@v6
         with:
           image: ${{ env.REPOSITORY }}:${{ steps.meta.outputs.version }}
           severity-cutoff: critical
