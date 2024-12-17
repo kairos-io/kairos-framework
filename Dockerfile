@@ -1,6 +1,6 @@
 ARG SECURITY_PROFILE=generic
 # renovate: datasource=docker depName=quay.io/luet/base versioning:semver
-FROM quay.io/luet/base:0.35.5 AS luet
+FROM quay.io/luet/base:0.36.0 AS luet
 
 FROM alpine AS base
 ENV LUET_NOLOCK=true
