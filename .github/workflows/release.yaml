@@ -21,3 +21,42 @@ jobs:
     uses: ./.github/workflows/reusable-build.yaml
     with:
       security_profile: ${{ matrix.security_profile }}
+
+  release-info:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/tags/v*'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Required due to the way Git works, without it this action won't be able to find any or the correct tags
+      - name: 'Get diff packages between versions tags'
+        run: |
+          current_tag=$(git tag --sort version:refname | tail -n 1)
+          # export the tag to be used in the next steps
+          echo "TAG=${current_tag}" >> $GITHUB_ENV
+          previous_tag=$(git tag --sort version:refname | tail -n 2 | head -n 1)
+          docker run --name generic quay.io/kairos/framework:${previous_tag} true || true
+          docker cp generic:/etc/kairos/versions.yaml versions.old.yaml
+          docker rm generic
+          docker run --name fips quay.io/kairos/framework:${previous_tag}-fips true || true
+          docker cp fips:/etc/kairos/versions.yaml versions-fips.old.yaml
+          docker rm fips
+          
+          docker run --name generic quay.io/kairos/framework:${current_tag} true || true
+          docker cp generic:/etc/kairos/versions.yaml versions.new.yaml
+          docker rm generic
+          docker run --name fips quay.io/kairos/framework:${current_tag}-fips true || true
+          docker cp fips:/etc/kairos/versions.yaml versions-fips.new.yaml
+          docker rm fips
+          
+          # This will put the diff between the versions in the pr-message file
+          .github/diffversions.sh
+          cat pr-message >> $GITHUB_STEP_SUMMARY
+
+      - name: Update release text
+        uses: softprops/action-gh-release@v2.1.0
+        with:
+          body_path: pr-message
