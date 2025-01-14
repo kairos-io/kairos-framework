@@ -25,7 +25,7 @@ jobs:
   release-info:
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/tags/v*'
+    if: startsWith(github.ref, 'refs/tags/')
     permissions:
       contents: write
     steps:
