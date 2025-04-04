@@ -18,8 +18,8 @@ FROM base AS generic
 RUN luet install -y --config repositories.yaml --system-target /framework \
     system/kcrypt \
     system/kcrypt-challenger \
-    system/immucore \
-    system/kairos-agent
+    system/immucore@0.8.0 \
+    system/kairos-agent@2.17.2
 
 FROM base AS fips
 RUN luet install -y --config repositories.yaml --system-target /framework \
