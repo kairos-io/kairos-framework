@@ -19,14 +19,14 @@ RUN luet install -y --config repositories.yaml --system-target /framework \
     system/kcrypt \
     system/kcrypt-challenger \
     system/immucore@0.8.0 \
-    system/kairos-agent@2.17.2
+    system/kairos-agent@2.17.3
 
 FROM base AS fips
 RUN luet install -y --config repositories.yaml --system-target /framework \
     fips/kcrypt \
     fips/kcrypt-challenger \
     fips/immucore@0.8.0 \
-    fips/kairos-agent@2.17.2
+    fips/kairos-agent@2.17.3
 
 # Final images
 FROM ${SECURITY_PROFILE} AS post
