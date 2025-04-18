@@ -57,6 +57,6 @@ jobs:
           cat pr-message >> $GITHUB_STEP_SUMMARY
 
       - name: Update release text
-        uses: softprops/action-gh-release@v2.2.1
+        uses: softprops/action-gh-release@v2.2.2
         with:
           body_path: pr-message
