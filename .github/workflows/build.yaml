@@ -7,7 +7,7 @@ jobs:
   get-old-versions:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Extract versions
         run: |
           docker run --name generic quay.io/kairos/framework:main true || true
@@ -41,7 +41,7 @@ jobs:
       pull-requests: write
     needs: [build, get-old-versions]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Download versions
         uses: actions/download-artifact@v4
         with:
