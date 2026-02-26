@@ -16,7 +16,7 @@ jobs:
           docker run --name fips quay.io/kairos/framework:main-fips true || true
           docker cp fips:/etc/kairos/versions.yaml versions-fips.old.yaml
           docker rm fips
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: old_versions.zip
           path: |
@@ -43,15 +43,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Download versions
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: versions.zip
       - name: Download versions fips
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: versions-fips.zip
       - name: Download old versions
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: old_versions.zip
       - name: Generate PR text
