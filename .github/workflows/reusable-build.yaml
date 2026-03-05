@@ -65,7 +65,7 @@ jobs:
           echo "version: ${{ steps.meta.outputs.version }}"
       # Build amd64 image to scan for vulnerabilities
       - name: Build framework
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           load: true
           sbom: false
@@ -114,7 +114,7 @@ jobs:
         with:
           sarif_file: '.'
       - name: Build and push framework
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           sbom: false
           platforms: linux/amd64,linux/arm64
